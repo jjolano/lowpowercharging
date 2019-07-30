@@ -1,7 +1,7 @@
 Package: me.jjolano.lowpowercharging
 Name: LowPowerCharging
 Depends: mobilesubstrate
-Version: 0.0.2
+Version: 0.0.3
 Architecture: iphoneos-arm
 Description: Enables Low Power Mode automatically when charging.
 Maintainer: jjolano
