@@ -5,11 +5,11 @@
 - (long long)setMode:(long long)arg1;
 @end
 
+static _CDBatterySaver *batterySaver;
 static long long last_lpm_state = 0;
 
 static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
 	NSDictionary *batteryState = (__bridge NSDictionary *) userInfo;
-	_CDBatterySaver *batterySaver = [_CDBatterySaver batterySaver];
 
 	if([batteryState[@"IsCharging"] isEqual:@1]
 	&& ([batteryState[@"CurrentCapacity"] floatValue] / [batteryState[@"MaxCapacity"] floatValue]) < 0.8) {
@@ -25,7 +25,7 @@ static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *obser
 }
 
 %ctor {
-	_CDBatterySaver *batterySaver = [_CDBatterySaver batterySaver];
+	batterySaver = [_CDBatterySaver batterySaver];
 	last_lpm_state = [batterySaver getPowerMode];
 
 	CFNotificationCenterAddObserver(
