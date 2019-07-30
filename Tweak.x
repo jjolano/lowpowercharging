@@ -24,29 +24,12 @@ static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *obser
 	}
 }
 
-static void sb_event_fullycharged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	// Disable LPM if it was disabled before.
-	if(last_lpm_state == 0) {
-		_CDBatterySaver *batterySaver = [_CDBatterySaver batterySaver];
-		[batterySaver setMode:0];	
-	}
-}
-
 %ctor {
 	CFNotificationCenterAddObserver(
 		CFNotificationCenterGetLocalCenter(),
 		NULL,
 		sb_event_acstatuschanged,
 		CFSTR("SBUIACStatusChangedNotification"),
-		NULL,
-		CFNotificationSuspensionBehaviorDeliverImmediately
-	);
-
-	CFNotificationCenterAddObserver(
-		CFNotificationCenterGetDarwinNotifyCenter(),
-		NULL,
-		sb_event_fullycharged,
-		CFSTR("com.apple.springboard.fullycharged"),
 		NULL,
 		CFNotificationSuspensionBehaviorDeliverImmediately
 	);
