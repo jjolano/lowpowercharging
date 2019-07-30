@@ -25,6 +25,9 @@ static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *obser
 }
 
 %ctor {
+	_CDBatterySaver *batterySaver = [_CDBatterySaver batterySaver];
+	last_lpm_state = [batterySaver getPowerMode];
+
 	CFNotificationCenterAddObserver(
 		CFNotificationCenterGetLocalCenter(),
 		NULL,
