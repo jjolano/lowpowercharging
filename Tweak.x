@@ -1,33 +1,26 @@
 // #import <CoreDuet/_CDBatterySaver.h>
 @interface _CDBatterySaver : NSObject
 + (id)batterySaver;
-- (int)getPowerMode;
-- (int)setMode:(int)arg1;
+- (long long)getPowerMode;
+- (long long)setMode:(long long)arg1;
 @end
 
-static int last_lpm_state = 0;
+static long long last_lpm_state = 0;
 
-static void set_lpm(void) {
-	// Check if device is charging.
-	UIDeviceBatteryState state = [[UIDevice currentDevice] batteryState];
+static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
+	NSDictionary *batteryState = (__bridge NSDictionary *) userInfo;
 	_CDBatterySaver *batterySaver = [_CDBatterySaver batterySaver];
 
-	if(state == UIDeviceBatteryStateUnplugged) {
+	if([batteryState[@"IsCharging"] isEqual:@1]) {
+		// Enable LPM.
+		last_lpm_state = [batterySaver getPowerMode];
+		[batterySaver setMode:1];
+	} else {
 		// Disable LPM if it was disabled before.
 		if(last_lpm_state == 0) {
 			[batterySaver setMode:0];	
 		}
 	}
-
-	if(state == UIDeviceBatteryStateCharging) {
-		// Enable LPM.
-		last_lpm_state = [batterySaver getPowerMode];
-		[batterySaver setMode:1];
-	}
-}
-
-static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
-	set_lpm();
 }
 
 %ctor {
