@@ -11,7 +11,7 @@ static void sb_event_acstatuschanged(CFNotificationCenterRef center, void *obser
 	NSDictionary *batteryState = (__bridge NSDictionary *) userInfo;
 	_CDBatterySaver *batterySaver = [_CDBatterySaver batterySaver];
 
-	if([batteryState[@"IsCharging"] isEqual:@1]) {
+	if([batteryState[@"IsCharging"] isEqual:@1] && [batteryState[@"FullyCharged"] isEqual:@0]) {
 		// Enable LPM.
 		last_lpm_state = [batterySaver getPowerMode];
 		[batterySaver setMode:1];
